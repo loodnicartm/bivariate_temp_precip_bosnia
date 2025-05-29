@@ -27,3 +27,6 @@ Environmental planning and policy support
 Identification of hotspots of drying/warming or cooling/wetting
 
 Integration with agricultural or hydrological impact assessments
+
+![bosnia_bivariate_2d__](https://github.com/user-attachments/assets/a256d9e2-1eab-4385-a0db-1b0208336385)
+
