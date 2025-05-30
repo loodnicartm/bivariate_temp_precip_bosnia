@@ -1,0 +1,60 @@
+
+---
+title: "Bivariate Map of Temperature and Precipitation in Bosnia"
+author: "loodnicartm"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Load Packages
+
+```{r}
+pacman::p_load(tidyverse, sf, terra, geodata, biscale, cowplot)
+```
+
+##  Load and Prepare Data
+
+```{r}
+bio <- geodata::worldclim_country("Bosnia and Herzegovina", var = "bio", res = 10)
+tavg <- terra::subset(bio, 1)
+prec <- terra::subset(bio, 12)
+df <- as.data.frame(c(tavg, prec), xy = TRUE, na.rm = TRUE)
+colnames(df)[3:4] <- c("tavg", "prec")
+```
+
+##  Classify Bivariate Color Scale
+
+```{r}
+df_bi <- biscale::bi_class(df, x = tavg, y = prec, style = "quantile", dim = 3)
+```
+
+##  Plot Bivariate Map
+
+```{r}
+ggplot() +
+  geom_raster(data = df_bi, aes(x = x, y = y, fill = bi_class)) +
+  biscale::bi_scale_fill(pal = "DkBlue", dim = 3) +
+  theme_void() +
+  labs(
+    title = "Bivariate Map of Temperature and Precipitation",
+    subtitle = "Bosnia and Herzegovina"
+  ) +
+  biscale::bi_theme()
+```
+
+## Add Legend
+
+```{r}
+legend <- biscale::bi_legend(pal = "DkBlue", dim = 3,
+                             xlab = "Temperature", ylab = "Precipitation",
+                             size = 8)
+
+cowplot::plot_grid(
+  last_plot(), legend,
+  ncol = 2,
+  rel_widths = c(1, .4)
+)
+```
